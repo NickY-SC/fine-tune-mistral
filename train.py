@@ -109,12 +109,12 @@ def evaluation(
     losses = losses / (step + 1)
     val_loss = get_all_reduce_mean(losses.clone()).item()
 
-    if local_rank == 0:
-        wandb.log(
-            {
-                "val_loss": val_loss,
-            }
-        )
+    # if local_rank == 0:
+    #     wandb.log(
+    #         {
+    #             "val_loss": val_loss,
+    #         }
+    #     )
 
     return val_loss
 
@@ -219,14 +219,14 @@ def should_run_eval(total_steps, times_to_run, current_step):
 def log_stats(pbar, wandb, epoch, loss_tensor, grad_norm, scheduler):
     last_lr = scheduler.get_last_lr()[0]
 
-    wandb.log(
-        {
-            "current_loss": loss_tensor,
-            "current_epoch": epoch,
-            "learning_rate": last_lr,
-            "grad_norm": grad_norm,
-        },
-    )
+    # wandb.log(
+    #     {
+    #         "current_loss": loss_tensor,
+    #         "current_epoch": epoch,
+    #         "learning_rate": last_lr,
+    #         "grad_norm": grad_norm,
+    #     },
+    # )
 
     current_loss = f"{loss_tensor:.4f}"
     current_lr = f"{last_lr:.10f}"
@@ -372,32 +372,32 @@ if __name__ == "__main__":
     max_steps = total_steps_per_epoch * epochs
     scheduler = get_scheduler(local_rank, scheduler_type, optimizer, max_steps)
 
-    if local_rank == 0:
-        run = wandb.init(
-            project="mistral-7b",
-            name=run_id,
-            config={
-                "model_name": model_name,
-                "run_id": run_id,
-                "date": date_of_run,
-                "dataset_size": len(train_dataset),
-                "dataset": ",".join(train_ds),
-                "validation": ",".join(val_ds),
-                "weight_decay": weight_decay,
-                "clip_gradients": clip_gradients,
-                "learning_rate": lr,
-                "shuffle": shuffle,
-                "seed": seed,
-                "disable_dropout": disable_dropout,
-                "use_multipack_sampler": use_multipack_sampler,
-                "train_on_inputs": train_on_inputs,
-                "epochs": epochs,
-                "acc_steps": acc_steps,
-                "batch_size": train_batch_size,
-                "total_batch_size": train_batch_size * world_size,
-                "scheduler_type": scheduler_type,
-            },
-        )
+    # if local_rank == 0:
+    #     run = wandb.init(
+    #         project="mistral-7b",
+    #         name=run_id,
+    #         config={
+    #             "model_name": model_name,
+    #             "run_id": run_id,
+    #             "date": date_of_run,
+    #             "dataset_size": len(train_dataset),
+    #             "dataset": ",".join(train_ds),
+    #             "validation": ",".join(val_ds),
+    #             "weight_decay": weight_decay,
+    #             "clip_gradients": clip_gradients,
+    #             "learning_rate": lr,
+    #             "shuffle": shuffle,
+    #             "seed": seed,
+    #             "disable_dropout": disable_dropout,
+    #             "use_multipack_sampler": use_multipack_sampler,
+    #             "train_on_inputs": train_on_inputs,
+    #             "epochs": epochs,
+    #             "acc_steps": acc_steps,
+    #             "batch_size": train_batch_size,
+    #             "total_batch_size": train_batch_size * world_size,
+    #             "scheduler_type": scheduler_type,
+    #         },
+    #     )
 
     if gradient_checkpointing:
         model.gradient_checkpointing_enable()
